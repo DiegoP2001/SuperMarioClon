@@ -91,18 +91,72 @@ export const preload = function () // Preload the necesary assets
 
     // ---------------------------------------------------------------------------------------------------------
 
+    // *********************************************** ENTITIES ************************************************
 
-    // Spritesheets
+        // Spritesheets "Overworld"
 
-    this.load.spritesheet( 'goomba', 'assets/entities/overworld/goomba.png',
-        {
-           frameWidth: 16, frameHeight: 16 
-        }
-    )
-    this.load.spritesheet('mario', 'assets/entities/mario.png'
-        , {
-            frameWidth: 18, frameHeight: 16
-        }
-    )
+            this.load.spritesheet( 'goomba', 'assets/entities/overworld/goomba.png',
+                {
+                frameWidth: 16, frameHeight: 16 
+                }
+            )
+
+        // Spritesheets "Underground"
+
+            this.load.spritesheet( 'goombaUnderground', 'assets/entities/underground/goomba.png',
+                {
+                frameWidth: 16, frameHeight: 16 
+                }
+            )
+
+        // Mario
+        
+            this.load.spritesheet('mario', 'assets/entities/mario.png'
+                , {
+                    frameWidth: 18, frameHeight: 16
+                }
+            )
+
+            this.load.spritesheet('marioGrown', 'assets/entities/mario-grown.png'
+                , {
+                    frameWidth: 18, frameHeight: 32
+                }
+            )
+
+            this.load.spritesheet('marioFire', 'assets/entities/mario-fire.png'
+                , {
+                    frameWidth: 15.75, frameHeight: 32
+                }
+            )
+
+        // Fireball
+
+            this.load.image('fireball', 'assets/entities/fireball.png')
+            this.load.spritesheet('marioFire', 'assets/entities/fireball-explosion.png'
+                , {
+                    frameWidth: 16, frameHeight: 16
+                }
+            )
+
+        // Koopa (Tortuga)
+
+            this.load.spritesheet('koopa', 'assets/entities/koopa.png',
+                {
+                    frameWidth: 16, frameHeight: 24
+                }
+            )
+            
+            this.load.spritesheet('koopaShell', 'assets/entities/shell.png',
+                {
+                    frameWidth: 16, frameHeight: 15
+                }
+            )
+
+        
+
+
+   
+    // *********************************************** ENTITIES ************************************************
+    // ---------------------------------------------------------------------------------------------------------
 
 }
