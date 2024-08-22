@@ -16,6 +16,18 @@ export const onMarioHitBlock = function (mario, bloque) {
     console.log('El jugador ha colisionado con una bloque');
 }
 
+export const marioDiesGoomba = function (mario, goomba, context) {
+    
+    mario.isDead = true
+    mario.anims.play("mario-dies", true)
+    context.sound.play('gameover')
+    mario.setCollideWorldBounds(false)
+    mario.setVelocityX(0)
+
+    if (goomba) { goomba.setVelocityX(0) }
+
+}
+
 function removeAllColiders(colliderObject, context) {
 
     colliderObject.forEach((collider) => {
@@ -24,23 +36,24 @@ function removeAllColiders(colliderObject, context) {
 
 }
 
-export const marioDies = function (mario, goomba) {
-    
+
+export const marioDiesScreen = function (mario, context) {
+
     mario.isDead = true
     mario.anims.play("mario-dies", true)
-    deadAudio.play()
+    context.sound.play('gameover')
     mario.setCollideWorldBounds(false)
     mario.setVelocityX(0)
-    goomba.setVelocityX(0)
-    
-    // setTimeout(() => {
-    //     mario.setVelocityY(-350)
-    //     removeAllColiders(this.marioColliders, this)
-    // }, 100)
 
-    // setTimeout(() => {
-    //     this.scene.restart()
-    // }, 2000)
+    setTimeout(() => {
+        mario.setVelocityY(-350)
+        removeAllColiders(context.marioColliders, context)
+    }, 100)
+
+    setTimeout(() => {
+        context.sound.stopAll()
+        context.scene.restart()
+    }, 2000)
 
 }
 
@@ -82,7 +95,7 @@ export const checkCollisionX = function (mario, goomba) {
 
     if (Phaser.Math.Distance.Between(mario.x, 0, goomba.x, 0) > (mario.width / 2 + goomba.width / 2)) {
         
-        marioDies(mario, goomba)
+        marioDiesGoomba(mario, goomba, this)
         
         setTimeout(() => {
             mario.setVelocityY(-350)
@@ -90,14 +103,16 @@ export const checkCollisionX = function (mario, goomba) {
         }, 100)
     
         setTimeout(() => {
+            this.sound.stopAll()
             this.scene.restart()
-            deadAudio.pause()
         }, 2500)
 
     } else {
 
+        this.sound.play('goombaStomp')
         goomba.anims.play('goomba-crush', true)
-        removeAllColiders(this.goombaColliders, this)
+        mario.setVelocityY(-150)
+        
         setTimeout(() => {
             goomba.destroy()
         }, 500)
@@ -113,6 +128,7 @@ export const checkCollisionY = function (mario, block) {
 
     if (marioVelocity.y === 0 && isMarioHittingBlock) { 
 
+        this.sound.play('breakBlock')
         this.tweens.add({
             targets: block,
             y: block.y - 10, // Desplazamiento hacia arriba
@@ -121,8 +137,9 @@ export const checkCollisionY = function (mario, block) {
             ease: 'Power2'
         });
 
-        block.setFrame(1)
-
+        if (block.texture.key === 'misteryBlock' ) {
+            block.setFrame(1)
+        }
 
     }
 
