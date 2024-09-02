@@ -24,15 +24,11 @@ export const createMisteryBlock = function (game, posX, posY, key) {
 
 }
 
-export const createBlockPattern = (game, posX, posY) => {
+export const createBlockPattern = (pattern, game, posX, posY) => {
 
-
-    const patron = [
-        [0, 0, 0],
-        [3, 2, 4],
-        [1, 1, 1],
-    ]
-
+    const BLOCK_WIDTH = 31
+    const BLOCK_HEIGHT = 24.5
+    
     let coordinates = {
         x: posX,
         y: posY
@@ -40,11 +36,11 @@ export const createBlockPattern = (game, posX, posY) => {
 
     let { x, y } = coordinates
 
-    patron.map((row) => {
+    pattern.map((row) => {
 
         row.forEach((block) => {
 
-            console.table(BLOCK_TYPE[block])
+            //console.table(BLOCK_TYPE[block])
 
             if (block !== 0) {
                 
@@ -57,12 +53,12 @@ export const createBlockPattern = (game, posX, posY) => {
 
             }
 
-            x += 31
+            x += BLOCK_WIDTH
 
         })
 
         x = coordinates.x
-        y += 24.5
+        y += BLOCK_HEIGHT
 
     })
 

@@ -1,6 +1,3 @@
-const deadAudio = new Audio("./assets/sound/music/gameover.mp3")
-
-
 export const onMarioHitMisteryBlock = function (mario, misteryBlocks) {
 
     // misteryBlocks.children.iterate((misteryBlock) => {
@@ -111,6 +108,7 @@ export const checkCollisionX = function (mario, goomba) {
 
         this.sound.play('goombaStomp')
         goomba.anims.play('goomba-crush', true)
+        goomba.isDead = true
         mario.setVelocityY(-150)
         
         setTimeout(() => {
@@ -128,18 +126,62 @@ export const checkCollisionY = function (mario, block) {
 
     if (marioVelocity.y === 0 && isMarioHittingBlock) { 
 
-        this.sound.play('breakBlock')
-        this.tweens.add({
-            targets: block,
-            y: block.y - 10, // Desplazamiento hacia arriba
-            duration: 100,
-            yoyo: true, // Regresar el bloque a su posición original
-            ease: 'Power2'
-        });
+        if (block.texture.key !== "solidBlock"){
 
-        if (block.texture.key === 'misteryBlock' ) {
-            block.setFrame(1)
+            this.sound.play('breakBlock')
+
+            this.tweens.add({
+                targets: block,
+                y: block.y - 10, // Desplazamiento hacia arriba
+                duration: 100,
+                yoyo: true, // Regresar el bloque a su posición original
+                ease: 'Power2'
+            });
+
+            if (block.texture.key === 'misteryBlock' ) {
+                block.setFrame(1)
+            }
+
         }
+
+    }
+
+}
+
+
+
+export const moveGoomba = (goomba) => {
+
+
+    if (goomba?.body?.touching.down) {
+
+        if (goomba?.body?.blocked.right) {
+
+            goomba.moveRight = false
+
+        } else if (goomba?.body?.blocked.left) {
+
+            goomba.moveRight = true
+
+        }
+
+        if (goomba?.moveRight && !goomba.isDead) {
+
+            goomba?.setVelocityX(100)
+
+        } else if (!goomba?.moveRight && !goomba.isDead) {
+
+            goomba?.setVelocityX(-100)
+
+        } else {
+
+            goomba?.setVelocityX(0)
+
+        }
+    
+    } else {    
+
+        
 
     }
 

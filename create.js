@@ -1,9 +1,8 @@
 // Config | consts | etc
 
 import { createAnims } from './anims.js'
-import { FLOOR_RENDER_TIMES } from './const.js';
+import { FLOOR_RENDER_TIMES, GOOMBA_POSITIONS, GOOMBAS_AMOUNT } from './const.js';
 import { config } from './game.js'
-
 
 // Create scenary functions
 
@@ -11,6 +10,7 @@ import * as scenary from './functions/scenary.js'
 import * as scenaryObjects from './functions/scenaryObject.js'
 import * as gameEntities from './functions/entities.js'
 import * as textures from './functions/texture.js'
+import { createBlocks } from './blocks.js';
 
 // Util functions 
 
@@ -77,275 +77,16 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.pipes = this.physics.add.staticGroup()
     this.flags = this.physics.add.staticGroup()
 
-    // Creamos los bloques
+    // Creamos los bloques ************************************************************************
 
-    scenaryObjects.createMisteryBlock(this, 550, config.height - 150,  'misteryBlock')
 
-    // ************************************************************************
-    // Donde 5 = CANTIDAD_BLOQUES
-    // Donde 650 = Posición inicial en X
-    let posInicialX = 650
-    for (let i = 0; i < 5; i++) {
-
-        if (i % 2 === 0) {
-            
-            //Block
-            scenaryObjects.createBlock(this, posInicialX, config.height - 150,  'block')
-
-        } else {
-
-            // Mistery block
-            scenaryObjects.createMisteryBlock(this, posInicialX, config.height - 150,  'misteryBlock')
-
-        }
-
-        posInicialX += 31
-
-    }
-
-    scenaryObjects.createMisteryBlock(this, 750, config.height - 265,  'misteryBlock')
-
-    posInicialX = 2500
-
-    for (let i = 0; i < 3; i++) {
-
-        if (i % 2 === 0) {
-
-            scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'block')
-
-        } else {
-
-            scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'misteryBlock')
-
-        }
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 2600
-
-    for (let i = 0; i < 8; i++) {
-
-        scenaryObjects.createBlock(this, posInicialX, 350, 'block')
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 3000
-
-    for (let i = 0; i < 4; i++) {
-
-        if (i === 3) {
-
-            scenaryObjects.createBlock(this, posInicialX, 350, 'misteryBlock')
-            scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'block')
-
-        } else {
-
-            scenaryObjects.createBlock(this, posInicialX, 350, 'block')
-
-        }
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 3300
-
-    for (let i = 0; i < 2; i++) {
-
-        scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'block')
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 3500
-
-    for (let i = 0; i < 3; i++) {
-
-        if (i === 1) { scenaryObjects.createBlock(this, posInicialX, 350, 'misteryBlock') }
-
-        scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'misteryBlock')
-
-        posInicialX += (31 * 3)
-
-    }
-
-    posInicialX = 4000
-
-    scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'block')
-
-    posInicialX = 4150
-
-    for (let i = 0; i < 3; i++) {
-
-        scenaryObjects.createBlock(this, posInicialX, 350, 'block')
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 4350
-
-    for (let i = 0; i < 4; i++) {
-
-        if ( i === 0 || i === 3) {
-
-            scenaryObjects.createBlock(this, posInicialX, 350, 'block')
-
-        } else {
-
-            scenaryObjects.createBlock(this, posInicialX, 350, 'misteryBlock')
-
-        }
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 4370
-
-    for (let i = 0; i < 2; i++) {
-
-        scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'block')
-
-        posInicialX += 31
-
-    }
+    createBlocks(this)
     
 
-    // 4700
-    posInicialX = 4550
-    let posInicialY = config.height -70
+    // BLOQUES *****************************************************************************************************
 
-
-    for (let i = 1; i <= 4; i++) {
-        
-        for (let j = 0; j < i; j++) {
-            
-            scenaryObjects.createBlock(this, posInicialX, posInicialY - (j * 25), 'solidBlock')
-
-        }
-
-        posInicialX += 31
-
-    }
-    
-    posInicialX = 4750
-
-    for (let i = 4; i > 0; i--) {
-        
-        for (let j = 0; j < i; j++) {
-            
-            scenaryObjects.createBlock(this, posInicialX, posInicialY - (j * 25), 'solidBlock')
-
-        }
-
-        posInicialX += 31
-
-    }
-
-
-    posInicialX = 5060
-    let lastBlock = undefined
-
-    for (let i = 0; i <= 5; i++) {
-        
-        if ( i < 5) {
-
-            for (let j = 0; j < i; j++) {
-                
-                scenaryObjects.createBlock(this, posInicialX, posInicialY - (j * 25), 'solidBlock')
-
-                lastBlock = posInicialY - (j * 25)
-
-            }
-            
-            posInicialX += 31
-            
-        
-        } else {
-
-
-            for (let j = 0; j < 4; j++) {
-                
-                scenaryObjects.createBlock(this, posInicialX, posInicialY, 'solidBlock')
-
-                posInicialY -= 25
-
-            }
-
-
-        }
-
-    }
-
-    posInicialX = 5300
-    posInicialY = config.height -70
-
-    for (let i = 4; i > 0; i--) {
-        
-        for (let j = 0; j < i; j++) {
-            
-            scenaryObjects.createBlock(this, posInicialX, posInicialY - (j * 25), 'solidBlock')
-
-        }
-
-        posInicialX += 31
-
-    }
-
-    posInicialX = 5600
-
-    for (let i = 0; i < 4; i++) {
-
-        if ( i == 2) { scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'misteryBlock') }
-
-        scenaryObjects.createBlock(this, posInicialX, config.height - 150, 'block')
-
-        posInicialX += 31
-
-    }
-
-
-    posInicialX = 6050
-
-    for (let i = 0; i <= 9; i++) {
-        
-        if ( i < 9) {
-
-            for (let j = 0; j < i; j++) {
-                
-                scenaryObjects.createBlock(this, posInicialX, posInicialY - (j * 25), 'solidBlock')
-
-                lastBlock = posInicialY - (j * 25)
-
-            }
-            
-            posInicialX += 31
-            
-        
-        } else {
-
-
-            for (let j = 0; j < 8; j++) {
-                
-                scenaryObjects.createBlock(this, posInicialX, posInicialY, 'solidBlock')
-
-                posInicialY -= 25
-
-            }
-
-
-        }
-
-    }
-
-    posInicialX = 6700
-    posInicialY = config.height - 27
+    let posInicialX = 6700
+    let posInicialY = config.height - 27
 
     scenaryObjects.createFlag(this, posInicialX, posInicialY - 21, 'flagMast')
 
@@ -354,10 +95,6 @@ export const create = function () // Se ejecuta cuando el juego comienza
     scenaryObjects.createCastle(this, posInicialX, posInicialY - 20)
 
 
-    posInicialX = 300
-    posInicialY = config.height - 150
-
-    scenaryObjects.createBlockPattern(this, posInicialX, posInicialY)
 
     
     // ************************************************************************
@@ -432,19 +169,23 @@ export const create = function () // Se ejecuta cuando el juego comienza
     gameEntities.createMario(this, 100, 250)
 
     
+    // Goomba coordinates
+    this.goombaPositions = GOOMBA_POSITIONS
+
     // Añadiendo las físicas del "goomba"
-    this.entities.goomba.push(
-        gameEntities.createGoomba(this, 750, (config.height - 100))
-    )
-    this.entities.goomba.push(
-        gameEntities.createGoomba(this, 1275, (config.height - 100))
-    )
-    this.entities.goomba.push(
-        gameEntities.createGoomba(this, 1650, (config.height - 100))
-    )
-    this.entities.goomba.push(
-        gameEntities.createGoomba(this, 1675, (config.height - 100))
-    )
+    for(const goomba of this.goombaPositions){
+
+        this.entities.goomba.push(
+            gameEntities.createGoomba(this, goomba.x, goomba.y)
+        )
+
+    }
+
+    this.entities.goomba.forEach((goomba) => {
+
+        goomba.moveRight = true
+
+    })
 
     
 
@@ -469,7 +210,11 @@ export const create = function () // Se ejecuta cuando el juego comienza
         this.entities.goomba.forEach((goomba) => {
 
             const collider = this.physics.add.collider(this.entities.mario, goomba, actions.checkCollisionX, null, this);
+            const blockCollider = this.physics.add.collider(this.blocks, goomba)
+            const pipeCollider = this.physics.add.collider(this.pipes, goomba)
             this.marioColliders.push(collider) 
+            
+            
 
         })
 
@@ -502,6 +247,12 @@ export const create = function () // Se ejecuta cuando el juego comienza
     // Eventos de teclado: es necesaria esta línea para poder interactuar con los eventos en el update.
     this.keys = this.input.keyboard.createCursorKeys()
 
+
+    this.blocks.children.entries.forEach((block) => {
+        
     
+
+    })
+
 
 }
