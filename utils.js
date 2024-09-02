@@ -150,8 +150,7 @@ export const checkCollisionY = function (mario, block) {
 
 
 
-export const moveGoomba = (goomba) => {
-
+export const moveGoomba = (goomba, game) => {
 
     if (goomba?.body?.touching.down) {
 
@@ -172,7 +171,7 @@ export const moveGoomba = (goomba) => {
         } else if (!goomba?.moveRight && !goomba.isDead) {
 
             goomba?.setVelocityX(-100)
-
+            
         } else {
 
             goomba?.setVelocityX(0)
@@ -181,8 +180,5 @@ export const moveGoomba = (goomba) => {
     
     } else {    
 
-        
-
     }
-
 }

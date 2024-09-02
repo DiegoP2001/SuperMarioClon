@@ -28,6 +28,7 @@ export const createBlockPattern = (pattern, game, posX, posY) => {
 
     const BLOCK_WIDTH = 31
     const BLOCK_HEIGHT = 24.5
+    const BARRIER_FINAL_POS = posX + ( pattern[0].length * BLOCK_WIDTH )
     
     let coordinates = {
         x: posX,
@@ -35,6 +36,18 @@ export const createBlockPattern = (pattern, game, posX, posY) => {
     }
 
     let { x, y } = coordinates
+    
+    game.barriers.left.push(
+        game.physics.add.staticImage(x - BLOCK_WIDTH / 2, y, null)
+        .setVisible(false)
+    )
+
+    console.log(BARRIER_FINAL_POS)
+
+    game.barriers.right.push(
+        game.physics.add.staticImage(BARRIER_FINAL_POS + BLOCK_WIDTH / 2, y, null)
+        .setVisible(false)
+    )
 
     pattern.map((row) => {
 

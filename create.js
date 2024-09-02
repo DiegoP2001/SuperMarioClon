@@ -28,6 +28,9 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.goombaColliders = []
     this.pipes = []
     this.flags = []
+    this.barriers = {}
+    this.barriers.left = []
+    this.barriers.right = []
 
 
     // Creamos las nubes
@@ -113,8 +116,19 @@ export const create = function () // Se ejecuta cuando el juego comienza
         // console.log(floorPlace)
     }
 
+
+    this.barriers.right.push(
+        this.physics.add.staticImage(floorPlace + 13.5, config.height - 48, null)
+        .setVisible(false)
+    )
+
     
     floorPlace = 2370
+
+    this.barriers.left.push(
+        this.physics.add.staticImage(floorPlace - 13.5, config.height - 48, null)
+        .setVisible(false)
+    )
 
     for (let i = 0; i < 2; i++) {
 
@@ -125,8 +139,17 @@ export const create = function () // Se ejecuta cuando el juego comienza
         // console.log(floorPlace)
     }
 
-    
+    this.barriers.right.push(
+        this.physics.add.staticImage(floorPlace + 13.5, config.height - 48, null)
+        .setVisible(false)
+    )
+
     floorPlace = 2950
+
+    this.barriers.left.push(
+        this.physics.add.staticImage(floorPlace - 13.5, config.height - 48, null)
+        .setVisible(false)
+    )
 
     for (let i = 0; i < 9; i++) {
 
@@ -212,10 +235,11 @@ export const create = function () // Se ejecuta cuando el juego comienza
             const collider = this.physics.add.collider(this.entities.mario, goomba, actions.checkCollisionX, null, this);
             const blockCollider = this.physics.add.collider(this.blocks, goomba)
             const pipeCollider = this.physics.add.collider(this.pipes, goomba)
+            const leftBarrierCollider = this.physics.add.collider(this.barriers.left, goomba)
+            const rigthBarrierCollider = this.physics.add.collider(this.barriers.right, goomba)
             this.marioColliders.push(collider) 
             
             
-
         })
 
         // Mario VS MisteryBlock
@@ -248,11 +272,7 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.keys = this.input.keyboard.createCursorKeys()
 
 
-    this.blocks.children.entries.forEach((block) => {
-        
     
-
-    })
 
 
 }
