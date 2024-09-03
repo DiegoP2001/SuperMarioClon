@@ -1,13 +1,20 @@
 import * as actions from './utils.js'
 import { config } from './game.js'
 
+
 export const update = function () // Game loop
 {
 
     const isMarioTouchingFloor = this.entities.mario.body.touching.down     
 
     this.entities.goomba.forEach((goomba) => {
-        actions.moveGoomba(goomba)
+        actions.moveGoomba(goomba, this)
+    })
+
+    this.coins.forEach((coin) => {
+
+        coin.anims.play("coin-rotate", true)
+
     })
 
     if (this.entities.mario.isDead === true) return 

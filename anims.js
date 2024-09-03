@@ -41,5 +41,14 @@ export const createAnims = (game) => {
         })
     }
 
+    if (!game.anims.exists('coin-rotate')){
+        game.anims.create({
+            key: 'coin-rotate',
+            frames: game.anims.generateFrameNumbers('coin', { start: 0, end: 3 }),
+            frameRate: 15,
+            repeat: -1,
+        })
+    }
+
 
 }

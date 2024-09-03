@@ -128,7 +128,7 @@ export const checkCollisionY = function (mario, block) {
 
         if (block.texture.key !== "solidBlock"){
 
-            this.sound.play('breakBlock')
+            //this.sound.play('breakBlock')
 
             this.tweens.add({
                 targets: block,
@@ -139,7 +139,62 @@ export const checkCollisionY = function (mario, block) {
             });
 
             if (block.texture.key === 'misteryBlock' ) {
-                block.setFrame(1)
+                
+                if (block.coins > 0) {
+
+                    this.sound.play("coin")
+                    const coin = this.physics.add.sprite(block.x - block.width / 2, block.y - block.height, 'coin')
+                                    .setOrigin(0, 0)
+                                    .setFrame(0)
+                                    .setScale(2, 1.5)
+                                    .refreshBody()
+                    
+                    
+                    coin.anims.play("coin-rotate", true)
+                    coin.setVelocityY(-250)
+                    coin.setGravityY(150)
+
+                    setTimeout(() => {
+
+                        coin.destroy()
+
+                    }, 500)
+
+                    block.coins --;
+
+                    if (block.coins === 0) {
+                        block.setTexture("solidBlock")
+                    }
+
+
+                } else {
+
+                    if (block.mushroom === 1) {
+
+                        this.sound.play("powerupAppears")
+                        const mushroom = this.physics.add.sprite(block.x - block.width / 2, block.y - block.height, 'superMushroom')
+                                        .setOrigin(0, 0)
+                                        .setFrame(0)
+                                        .setScale(2, 1.5)
+                                        .refreshBody()
+                        
+                        
+                        mushroom.setGravityY(150)
+                        mushroom.setVelocityY(-50)
+                        mushroom.setVelocityX(50)
+                        
+
+
+                        this.physics.add.collider(mushroom, this.floor)
+                        this.physics.add.collider(mushroom, this.blocks)
+                        this.physics.add.collider(mushroom, this.entities.mario, (mario, mushroom) => {
+                            growMario(mario, mushroom, this)
+                        }, null, this)
+
+                    }
+
+                }
+
             }
 
         }
@@ -149,9 +204,15 @@ export const checkCollisionY = function (mario, block) {
 }
 
 
+export const growMario = (mario, mushroom, scene) => {
 
-export const moveGoomba = (goomba) => {
+    scene.entities.mario.setTexture("marioGrown")
 
+}
+
+
+
+export const moveGoomba = (goomba, game) => {
 
     if (goomba?.body?.touching.down) {
 
@@ -172,7 +233,7 @@ export const moveGoomba = (goomba) => {
         } else if (!goomba?.moveRight && !goomba.isDead) {
 
             goomba?.setVelocityX(-100)
-
+            
         } else {
 
             goomba?.setVelocityX(0)
@@ -181,8 +242,5 @@ export const moveGoomba = (goomba) => {
     
     } else {    
 
-        
-
     }
-
 }
