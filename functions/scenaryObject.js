@@ -29,6 +29,8 @@ export const createBlockPattern = (pattern, game, posX, posY) => {
   };
 
   let { x, y } = coordinates;
+  let index = 0
+
   const items = [
     "coin",
     "superMushroom",
@@ -64,17 +66,7 @@ export const createBlockPattern = (pattern, game, posX, posY) => {
                 .setOrigin(0, 0)
                 .setFrame(0)
                 .setScale(2, 1.5)
-                .refreshBody();
-            
-            game.blocks.children.entries.forEach((misteryBlock, index) => {
-
-                if (items[index] === 'coin') {
-                    misteryBlock.coins = 3
-                } else {
-                    misteryBlock.mushroom = 1
-                }
-
-            })
+                .refreshBody()
 
         } else {
 
@@ -94,6 +86,31 @@ export const createBlockPattern = (pattern, game, posX, posY) => {
     x = coordinates.x;
     y += BLOCK_HEIGHT;
   });
+
+
+  game.blocks.children.entries.filter((block) => {
+
+    if (block.texture.key === 'misteryBlock') {
+
+      if (items[index] === 'coin') {
+
+        block.coins = 3
+
+      } else {
+
+        block.mushroom = 1
+
+      }
+
+      index++;
+
+    } else if (block.texture.key === 'block') {
+
+      block.lifes = 2
+
+    }
+
+  })
 
   /*
         [0, 0, 0]

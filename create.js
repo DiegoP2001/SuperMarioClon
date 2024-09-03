@@ -32,6 +32,7 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.barriers.right = []
     this.items = []
     this.coins = []
+    this.score = 0
 
 
     // Creamos las nubes
@@ -118,67 +119,24 @@ export const create = function () // Se ejecuta cuando el juego comienza
     scenaryObjects.createPipe(this, 6000, config.height - 95,  'pipeSmall')
     
 
-    // Creando las monedas
-    
-    const items = [
-        "coin",
-        "superMushroom",
-        "coin",
-        "coin",
-        "superMushroom",
-        "coin",
-        "superMushroom",
-        "coin",
-        "coin",
-        "coin",
-        "coin",
-        "coin",
-        "coin"
-    ]
-
-    // const itemPositions = scenaryObjects.getItemPositions(this, items)
-
-    // itemPositions.forEach((item) => {
-
-    //     if (item.key === 'coin') {
-
-    //         for(let i = 0; i < 3; i++) {
-                
-    //             this.coins.push(
-                   
-    //                     this.physics.add.sprite(item.x, item.y, item.key)
-    //                         .setOrigin(0, 0)
-    //                         .setFrame(0)
-    //                         .setScale(2, 1.5)
-    //                         .refreshBody()
-                            
-                
-    //             )
-
-    //         }
-            
-    //     } else {
-
-    //         this.items
-    //             .create(item.x, item.y, item.key)
-    //             .setOrigin(0, 0)
-    //             .setFrame(0)
-    //             .setScale(2, 1.5)
-    //             .refreshBody()
-
-    //     }  
-
-    // })
-
-
-    console.log(this.coins)
-
     // Creando las animaciones le pasamos como parámetro el "juego" (this)
     createAnims(this)
 
 
+    // Creando el texto de las puntuaciones etc
+    this.scoreText = this.add.text(20, 20, 'Score: 0', {
+        font: 'bold 32px "Calibri"',
+        fill: '#ffffff',
+        align: 'left' 
+    });
+
+    this.scoreText.setScrollFactor(0);
+    this.scoreText.setOrigin(0, 0);
+
+
     // Añadiendo las físicas del "mario"
     gameEntities.createMario(this, 100, 250)
+    this.entities.mario.lifes = 1
 
     
     // Goomba coordinates
