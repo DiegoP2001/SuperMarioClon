@@ -45,12 +45,15 @@ export const preload = function () // Preload the necesary assets
         // Blocks "Overworld"
 
             this.load.image('block', 'assets/blocks/overworld/block.png')
-            this.load.image('brickDebris', 'assets/blocks/overworld/brick-debris.png')
             this.load.image('emptyBlock', 'assets/blocks/overworld/emptyBlock.png')
             this.load.image('solidBlock', 'assets/blocks/overworld/immovableBlock.png')
 
         // Spritesheets
-        
+            this.load.spritesheet('brickDebris', 'assets/blocks/overworld/brick-debris.png',
+                {
+                   frameWidth: 16, frameHeight: 8  
+                }
+            )
             this.load.spritesheet( 'misteryBlock', 'assets/blocks/overworld/misteryBlock.png',
                 {
                 frameWidth: 16, frameHeight: 16 

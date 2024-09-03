@@ -32,7 +32,6 @@ export const update = function () // Game loop
         this.sound.play("jump")
         actions.marioJump(this.entities.mario)
         
-
     } else if (this.keys.right.isDown) {
 
         actions.marioMoveRight(this.entities.mario, isMarioTouchingFloor)
