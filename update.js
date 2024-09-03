@@ -39,6 +39,11 @@ export const update = function () // Game loop
     } else if (this.keys.left.isDown) {
         
         actions.marioMoveLeft(this.entities.mario, isMarioTouchingFloor)
+    
+    } else if (this.keys.down.isDown) {
+        
+        // Agacharse
+        console.log("Down arrow")
 
     } else {
 

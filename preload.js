@@ -139,7 +139,7 @@ export const preload = function () // Preload the necesary assets
 
             this.load.spritesheet('marioFire', 'assets/entities/mario-fire.png'
                 , {
-                    frameWidth: 15.75, frameHeight: 32
+                    frameWidth: 18, frameHeight: 32
                 }
             )
 
