@@ -137,6 +137,11 @@ export const create = function () // Se ejecuta cuando el juego comienza
     // Añadiendo las físicas del "mario"
     gameEntities.createMario(this, 100, 250)
     this.entities.mario.lifes = 1
+    this.entities.mario.isInvincible = false
+
+    console.log(this.entities.mario)
+    console.log(this.entities.mario.displayHeight)
+    console.log(this.entities.mario.displayWidth)
 
     
     // Goomba coordinates

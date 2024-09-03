@@ -17,19 +17,22 @@ export const onMarioHitBlock = function (mario, bloque) {
 
 export const marioDiesGoomba = function (mario, goomba, context) {
     
-    mario.isDead = true
-    getAnim(mario, "dies")
-    context.sound.play('gameover')
-    mario.setCollideWorldBounds(false)
-    mario.setVelocityX(0)
+    
+        mario.isDead = true
+        getAnim(mario, "dies")
+        context.sound.play('gameover')
+        mario.setCollideWorldBounds(false)
+        mario.setVelocityX(0)
 
-    if (goomba) { goomba.setVelocityX(0) }
+        if (goomba) { goomba.setVelocityX(0) }
+
 
 }
 
 function removeAllColiders(colliderObject, context) {
 
     colliderObject.forEach((collider) => {
+
         context.physics.world.removeCollider(collider)
     })
 
@@ -99,17 +102,31 @@ export const checkCollisionX = function (mario, goomba) {
 
     if (Phaser.Math.Distance.Between(mario.x, 0, goomba.x, 0) > (mario.width / 2 + goomba.width / 2)) {
         
-        marioDiesGoomba(mario, goomba, this)
-        
-        setTimeout(() => {
-            mario.setVelocityY(-350)
-            removeAllColiders(this.marioColliders, this)
-        }, 100)
+        if ( mario.lifes > 1 ) {
+
+            shrinkMario(mario, goomba, this)
+            mario.lifes --;
     
-        setTimeout(() => {
-            this.sound.stopAll()
-            this.scene.restart()
-        }, 2500)
+        } else {
+
+            if (!mario.isInvincible) {
+
+                marioDiesGoomba(mario, goomba, this)
+            
+                setTimeout(() => {
+                    mario.setVelocityY(-350)
+                    removeAllColiders(this.marioColliders, this)
+                }, 100)
+            
+                setTimeout(() => {
+                    this.sound.stopAll()
+                    this.scene.restart()
+                }, 2500)
+
+            }
+
+        }
+
 
     } else {
 
@@ -198,8 +215,8 @@ export const checkCollisionY = function (mario, block) {
                         this.physics.add.collider(mushroom, this.floor)
                         this.physics.add.collider(mushroom, this.blocks)
                         this.physics.add.collider(mushroom, this.entities.mario, (mushroom, mario) => {
-                            growMario(mushroom, mario, this)
                             mario.lifes++;
+                            growMario(mushroom, mario, this)
                         }, null, this)
 
                     }
@@ -257,35 +274,77 @@ export const growMario = (mushroom, mario, scene) => {
     scene.physics.world.pause()
 
     let i = 0
+    let growAnimInterval = undefined
         
     scene.sound.play("powerupAppears")
+
+    if (mario.lifes === 2){
         
-    const growAnimInterval = setInterval(() => {
+        console.log("Enters Grown Mario")
 
-            
-        if (i % 2 !== 0) {
+         growAnimInterval = setInterval(() => {
 
-            mario.isGrown = false
-            mario.anims.play("mario-idle")
-            mario.height = 16
-            mario.width = 18
-            
+                
+            if (i % 2 !== 0) {
 
-        } else {
+                mario.isGrown = false
+                mario.anims.play("mario-idle")
+                mario.height = 16
+                mario.width = 18
+                
 
-            mario.isGrown = true
-            mario.anims.play("mario-grow-idle")
-            mario.setTexture("marioGrown")
-            mario.setDisplaySize(20, 32)
-            mario.body.setSize(20, 32)
-            mario.texture.key = "marioGrown"
+            } else {
 
-        }
+                mario.isGrown = true
+                mario.anims.play("mario-grow-idle")
+                mario.setTexture("marioGrown")
+                mario.setDisplaySize(26, 38)
+                mario.body.setSize(20, 32)
+                mario.texture.key = "marioGrown"
 
-        i++;
+            }
+
+            i++;
 
 
-    }, 100)
+        }, 100)
+    
+    } else if (mario.lifes > 2) {
+
+        console.log("Enters Super Mario")
+        
+
+        growAnimInterval = setInterval(() => {
+
+            console.log(i)
+                
+            if (i % 2 !== 0) {
+
+                mario.isGrown = true
+                mario.anims.play("mario-grow-idle")
+                mario.setTexture("marioGrown")
+                mario.setDisplaySize(26, 38)
+                mario.body.setSize(20, 32)
+                mario.texture.key = "marioGrown"
+                
+
+            } else {
+
+                mario.isGrown = false
+                mario.anims.play("mario-super-idle")
+                mario.setTexture("marioFire")
+                mario.setDisplaySize(28, 40)
+                mario.body.setSize(20, 32)
+                mario.texture.key = "marioFire"
+
+            }
+
+            i++;
+
+
+        }, 100)
+
+    }
 
     setTimeout(() => {
         clearInterval(growAnimInterval)
@@ -295,6 +354,112 @@ export const growMario = (mushroom, mario, scene) => {
 
     }, 500)
 
+
+    console.log(mario)
+
+
+}
+
+
+export const shrinkMario = (mario, goomba, scene) => {
+
+
+    scene.physics.world.pause()
+    mario.isInvincible = true
+
+    let i = 0
+    let growAnimInterval = undefined
+        
+    scene.sound.play("powerdown")
+
+    // console.log("Entra arriba")
+    // console.log(mario.lifes)
+
+    switch (mario.lifes) {
+
+        case 2: 
+
+            growAnimInterval = setInterval(() => {
+
+                if (i % 2 !== 0) {
+                    
+                    mario.isGrown = true
+                    mario.anims.play("mario-grow-idle")
+                    mario.setTexture("marioGrown")
+                    mario.setDisplaySize(26, 38)
+                    mario.body.setSize(20, 32)
+                    mario.texture.key = "marioGrown"
+                    mario.disableBody(true, false)
+
+                } else {
+
+                    mario.isGrown = false
+                    mario.anims.play("mario-idle")
+                    mario.height = 16
+                    mario.width = 18
+                    mario.setDisplaySize(27, 24)
+                    mario.body.setSize(20, 18)
+                    mario.disableBody(true, false)
+
+
+                }
+
+                i++;
+
+            }, 100)
+
+            break;
+
+
+        case 3:
+
+            setInterval(() => {
+
+                if (i % 2 !== 0) {
+
+                    mario.isGrown = false
+                    mario.anims.play("mario-super-idle")
+                    mario.setTexture("marioFire")
+                    mario.setDisplaySize(28, 40)
+                    mario.body.setSize(20, 32)
+                    mario.texture.key = "marioFire"
+                    mario.disableBody(true, false)
+
+                } else {
+
+                    mario.isGrown = true
+                    mario.anims.play("mario-grow-idle")
+                    mario.setTexture("marioGrown")
+                    mario.setDisplaySize(26, 38)
+                    mario.body.setSize(20, 32)
+                    mario.texture.key = "marioGrown"
+                    mario.disableBody(true, false)
+
+                }
+
+                i++;
+
+            }, 100)
+
+            break;
+
+    }
+
+
+    setTimeout(() => {
+
+        clearInterval(growAnimInterval)
+        scene.physics.world.resume()
+        scene.anims.resumeAll()
+
+    }, 500)
+
+    setTimeout(() => {
+
+        mario.enableBody(true, goomba.x, goomba.y - 50, true, true)
+        mario.setVisible(true)
+
+    }, 1000)
 
 
 }
@@ -342,8 +507,9 @@ export const getAnim = (mario, animName) => {
 
         mario.anims.play(`mario-grow-${animName}`, true)
 
-    } else if (mario.isSuperMario) {
+    } else if (mario.lifes > 2) {
 
+        console.log("Entra")
         mario.anims.play(`mario-super-${animName}`, true)
 
     } else {
