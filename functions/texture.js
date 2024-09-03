@@ -6,4 +6,5 @@ export const createFloor = function (game, posX, posY) {
         .setScale(2, 1.5)
         .refreshBody()
 
+
 }

@@ -11,6 +11,12 @@ export const update = function () // Game loop
         actions.moveGoomba(goomba, this)
     })
 
+    this.coins.forEach((coin) => {
+
+        coin.anims.play("coin-rotate", true)
+
+    })
+
     if (this.entities.mario.isDead === true) return 
 
     if (this.entities.mario.y >= config.height) {

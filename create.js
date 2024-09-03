@@ -9,7 +9,6 @@ import { config } from './game.js'
 import * as scenary from './functions/scenary.js'
 import * as scenaryObjects from './functions/scenaryObject.js'
 import * as gameEntities from './functions/entities.js'
-import * as textures from './functions/texture.js'
 import { createBlocks } from './blocks.js';
 
 // Util functions 
@@ -31,6 +30,8 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.barriers = {}
     this.barriers.left = []
     this.barriers.right = []
+    this.items = []
+    this.coins = []
 
 
     // Creamos las nubes
@@ -75,10 +76,11 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
     // Añadimos todos los elementos estáticos del mundo
     this.floor = this.physics.add.staticGroup()
-    this.misteryBlocks = this.physics.add.staticGroup()
     this.blocks = this.physics.add.staticGroup()
     this.pipes = this.physics.add.staticGroup()
     this.flags = this.physics.add.staticGroup()
+
+
 
     // Creamos los bloques ************************************************************************
 
@@ -98,78 +100,13 @@ export const create = function () // Se ejecuta cuando el juego comienza
     scenaryObjects.createCastle(this, posInicialX, posInicialY - 20)
 
 
-
     
     // ************************************************************************
 
 
     // Distributing the floor
-
-    let floorPlace = 0
-
-    for (let i = 0; i < 9; i++) {
-
-        textures.createFloor(this, floorPlace, config.height - 48)
-
-        floorPlace += 255
-
-        // console.log(floorPlace)
-    }
-
-
-    this.barriers.right.push(
-        this.physics.add.staticImage(floorPlace + 13.5, config.height - 48, null)
-        .setVisible(false)
-    )
-
+    scenary.createFloor(this)
     
-    floorPlace = 2370
-
-    this.barriers.left.push(
-        this.physics.add.staticImage(floorPlace - 13.5, config.height - 48, null)
-        .setVisible(false)
-    )
-
-    for (let i = 0; i < 2; i++) {
-
-        textures.createFloor(this, floorPlace, config.height - 48)
-
-        floorPlace += 255
-
-        // console.log(floorPlace)
-    }
-
-    this.barriers.right.push(
-        this.physics.add.staticImage(floorPlace + 13.5, config.height - 48, null)
-        .setVisible(false)
-    )
-
-    floorPlace = 2950
-
-    this.barriers.left.push(
-        this.physics.add.staticImage(floorPlace - 13.5, config.height - 48, null)
-        .setVisible(false)
-    )
-
-    for (let i = 0; i < 9; i++) {
-
-        textures.createFloor(this, floorPlace, config.height - 48)
-
-        floorPlace += 255
-
-        // console.log(floorPlace)
-    }
-
-    floorPlace = 5300
-
-    for (let i = 0; i < 10; i++) {
-
-        textures.createFloor(this, floorPlace, config.height - 48)
-
-        floorPlace += 255
-
-        // console.log(floorPlace)
-    }
 
     // Creando los pipes
 
@@ -179,10 +116,62 @@ export const create = function () // Se ejecuta cuando el juego comienza
     scenaryObjects.createPipe(this, 1900, config.height - 142,  'verticalLargePipe')
     scenaryObjects.createPipe(this, 5500, config.height - 95,  'pipeSmall')
     scenaryObjects.createPipe(this, 6000, config.height - 95,  'pipeSmall')
-
     
 
+    // Creando las monedas
+    
+    const items = [
+        "coin",
+        "superMushroom",
+        "coin",
+        "coin",
+        "superMushroom",
+        "coin",
+        "superMushroom",
+        "coin",
+        "coin",
+        "coin",
+        "coin",
+        "coin",
+        "coin"
+    ]
 
+    // const itemPositions = scenaryObjects.getItemPositions(this, items)
+
+    // itemPositions.forEach((item) => {
+
+    //     if (item.key === 'coin') {
+
+    //         for(let i = 0; i < 3; i++) {
+                
+    //             this.coins.push(
+                   
+    //                     this.physics.add.sprite(item.x, item.y, item.key)
+    //                         .setOrigin(0, 0)
+    //                         .setFrame(0)
+    //                         .setScale(2, 1.5)
+    //                         .refreshBody()
+                            
+                
+    //             )
+
+    //         }
+            
+    //     } else {
+
+    //         this.items
+    //             .create(item.x, item.y, item.key)
+    //             .setOrigin(0, 0)
+    //             .setFrame(0)
+    //             .setScale(2, 1.5)
+    //             .refreshBody()
+
+    //     }  
+
+    // })
+
+
+    console.log(this.coins)
 
     // Creando las animaciones le pasamos como parámetro el "juego" (this)
     createAnims(this)
@@ -244,9 +233,9 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
         // Mario VS MisteryBlock
 
-        this.marioColliders.push(
-            this.physics.add.collider(this.entities.mario, this.misteryBlocks, actions.checkCollisionY, null, this)
-        )
+        // this.marioColliders.push(
+        //     this.physics.add.collider(this.entities.mario, this.misteryBlocks, actions.checkCollisionY, null, this)
+        // )
         
         // Mario VS Block
 
@@ -271,8 +260,6 @@ export const create = function () // Se ejecuta cuando el juego comienza
     // Eventos de teclado: es necesaria esta línea para poder interactuar con los eventos en el update.
     this.keys = this.input.keyboard.createCursorKeys()
 
-
-    
 
 
 }
