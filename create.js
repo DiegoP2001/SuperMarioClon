@@ -1,7 +1,7 @@
 // Config | consts | etc
 
 import { createAnims } from './anims.js'
-import { FLOOR_RENDER_TIMES, GOOMBA_POSITIONS, GOOMBAS_AMOUNT } from './const.js';
+import { GOOMBA_POSITIONS, TIME_TO_PLAY } from './const.js';
 import { config } from './game.js'
 
 // Create scenary functions
@@ -14,6 +14,7 @@ import { createBlocks } from './blocks.js';
 // Util functions 
 
 import * as actions from './utils.js'
+import { createText } from './text.js';
 
 
 
@@ -32,7 +33,9 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.barriers.right = []
     this.items = []
     this.coins = []
+    this.texts = []
     this.score = 0
+    this.time = TIME_TO_PLAY
 
 
     // Creamos las nubes
@@ -82,7 +85,6 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.flags = this.physics.add.staticGroup()
 
 
-
     // Creamos los bloques ************************************************************************
 
 
@@ -124,24 +126,18 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
 
     // Creando el texto de las puntuaciones etc
-    this.scoreText = this.add.text(20, 20, 'Score: 0', {
-        font: 'bold 32px "Calibri"',
-        fill: '#ffffff',
-        align: 'left' 
-    });
+    
+    createText(this)
 
-    this.scoreText.setScrollFactor(0);
-    this.scoreText.setOrigin(0, 0);
 
 
     // Añadiendo las físicas del "mario"
     gameEntities.createMario(this, 100, 250)
     this.entities.mario.lifes = 1
+    this.entities.mario.setDrag(100, 0)
+    this.entities.mario.setMaxVelocity(200, 350)
     this.entities.mario.isInvincible = false
-
-    console.log(this.entities.mario)
-    console.log(this.entities.mario.displayHeight)
-    console.log(this.entities.mario.displayWidth)
+    this.entities.mario.weaponsReloaded = true
 
     
     // Goomba coordinates
@@ -184,21 +180,14 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
         this.entities.goomba.forEach((goomba) => {
 
-            const collider = this.physics.add.collider(this.entities.mario, goomba, actions.checkCollisionX, null, this);
+            //const collider = this.physics.add.collider(this.entities.mario, goomba, actions.checkCollisionX, null, this);
             const blockCollider = this.physics.add.collider(this.blocks, goomba)
             const pipeCollider = this.physics.add.collider(this.pipes, goomba)
             const leftBarrierCollider = this.physics.add.collider(this.barriers.left, goomba)
             const rigthBarrierCollider = this.physics.add.collider(this.barriers.right, goomba)
-            this.marioColliders.push(collider) 
-            
+            //this.marioColliders.push(collider) 
             
         })
-
-        // Mario VS MisteryBlock
-
-        // this.marioColliders.push(
-        //     this.physics.add.collider(this.entities.mario, this.misteryBlocks, actions.checkCollisionY, null, this)
-        // )
         
         // Mario VS Block
 
@@ -219,10 +208,12 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.cameras.main.setBounds(0, 0, config.width * 4, config.height)
     this.cameras.main.startFollow(this.entities.mario)
 
+    console.log(this.cameras.main)
+
 
     // Eventos de teclado: es necesaria esta línea para poder interactuar con los eventos en el update.
     this.keys = this.input.keyboard.createCursorKeys()
-
+    this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 
 }

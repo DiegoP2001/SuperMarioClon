@@ -22,7 +22,7 @@ export const marioDiesGoomba = function (mario, goomba, context) {
         getAnim(mario, "dies")
         context.sound.play('gameover')
         mario.setCollideWorldBounds(false)
-        mario.setVelocityX(0)
+        mario.setAccelerationX(0)
 
         if (goomba) { goomba.setVelocityX(0) }
 
@@ -70,7 +70,7 @@ export const marioJump = function (mario) {
 
 export const marioMoveRight = function (mario, touchingFloor) {
 
-    mario.setVelocityX(200)
+    mario.setAccelerationX(200)
     // if (touchingFloor) { mario.anims.play("mario-walk", true) }
     mario.flipX = false
 
@@ -80,7 +80,7 @@ export const marioMoveRight = function (mario, touchingFloor) {
 
 export const marioMoveLeft = function (mario, touchingFloor) {
 
-    mario.setVelocityX(-200)
+    mario.setAccelerationX(-200)
 
     mario.flipX = true
 
@@ -90,9 +90,81 @@ export const marioMoveLeft = function (mario, touchingFloor) {
 
 export const marioStop = function (mario) {
 
-    mario.setVelocityX(0)
+    mario.setAccelerationX(0)
 
     getAnim(mario, "idle")
+
+}
+
+export const marioBend = function (mario) {
+
+    mario.setVelocityX(0)
+
+    getAnim(mario, "bend")
+
+}
+
+export const marioShoot = function (mario, game) {
+
+    if (mario.lifes > 2) {
+        if (game.entities.mario.weaponsReloaded) {
+
+            getAnim(mario, "shoot")
+
+            game.sound.play("fireball")
+
+            let { x, y, flipX } = mario
+
+            const fireball = game.physics.add.sprite( x + 30, y - 40, 'fire')
+                                            .setOrigin(0, 0)
+                                            .setFrame(0)
+                                            .setBounce(1)
+                                            .setGravityY(320)
+                                            .setScale(2, 1.5)
+            
+            fireball.anims.play("fire-rotation")
+
+            // fireball.body.setCircle(fireball.width / 2)
+            fireball.setVelocityX(
+                flipX ? -350 : 350
+            ) 
+            fireball.setCircle(fireball.width / 2)
+            fireball.setDisplaySize(20, 24)
+            fireball.body.setSize(fireball.width, fireball.height)
+            fireball.refreshBody()
+    
+            game.physics.add.collider(fireball, game.floor)
+            game.physics.add.collider(fireball, game.blocks)
+            game.physics.add.collider(fireball, game.pipes, () => {
+
+                // Logica de la explosion
+                fireball.setVelocityX(0)
+                fireball.setVelocityY(-20)
+                fireball.setGravityY(-300)
+
+
+                fireball.anims.play('fireball-explosion')
+
+                fireball.on('animationcomplete', (animation, frame) => {
+                    console.log("animation end")
+                    fireball.destroy()
+                })
+                
+            })
+
+            game.entities.goomba.forEach((goomba) => {
+                game.physics.add.overlap(fireball, goomba, () => {
+
+                    killGoomba(goomba, fireball, game)
+
+                })
+            })
+
+            fireball.setCollideWorldBounds(false)  
+
+        }
+
+    }
 
 }
 
@@ -186,7 +258,7 @@ export const checkCollisionY = function (mario, block) {
 
                     block.coins --;
                     
-                    this.scoreText.setText(`Score: ${addScore(this)}`)
+                    this.scoreText.setText(`Score: ${addScore(block, this)}`)
 
                     if (block.coins === 0) {
                         block.setTexture("solidBlock")
@@ -199,25 +271,53 @@ export const checkCollisionY = function (mario, block) {
 
                         block.mushroom = 0
                         block.setTexture("solidBlock")
-                        const mushroom = this.physics.add.sprite(block.x - block.width / 2, block.y - block.height, 'superMushroom')
-                                        .setOrigin(0, 0)
-                                        .setFrame(0)
-                                        .setScale(2, 1.5)
-                                        .refreshBody()
+                        this.sound.play("powerupAppears")
+
+                        if (this.entities.mario.lifes === 1) {
                         
-                        
-                        mushroom.setGravityY(150)
-                        mushroom.setVelocityY(-150)
-                        moveGoomba(mushroom, this)
-                        
+                            const mushroom = this.physics.add.sprite(block.x - block.width / 2, block.y - block.height, 'superMushroom')
+                                            .setOrigin(0, 0)
+                                            .setFrame(0)
+                                            .setScale(2, 1.5)
+                                            .refreshBody()
+                            
+                            
+                            mushroom.setGravityY(150)
+                            mushroom.setVelocityY(-150)
+                            moveGoomba(mushroom, this)
+                            
 
 
-                        this.physics.add.collider(mushroom, this.floor)
-                        this.physics.add.collider(mushroom, this.blocks)
-                        this.physics.add.collider(mushroom, this.entities.mario, (mushroom, mario) => {
-                            mario.lifes++;
-                            growMario(mushroom, mario, this)
-                        }, null, this)
+                            this.physics.add.collider(mushroom, this.floor)
+                            this.physics.add.collider(mushroom, this.blocks)
+                            this.physics.add.collider(mushroom, this.entities.mario, (mushroom, mario) => {
+                                mario.lifes++;
+                                growMario(mushroom, mario, this)
+                            }, null, this)
+
+                        } else {
+
+                            const fireFlower = this.physics.add.sprite(block.x - block.width / 2, block.y - block.height, 'fireFlower')
+                                            .setOrigin(0, 0)
+                                            .setFrame(0)
+                                            .setScale(2, 1.5)
+                                            .refreshBody()
+                            
+                            fireFlower.anims.play("flower-bright")
+                            fireFlower.setGravityY(150)
+                            fireFlower.setVelocityY(-150)
+                            moveGoomba(fireFlower, this)
+                            
+
+
+                            this.physics.add.collider(fireFlower, this.floor)
+                            this.physics.add.collider(fireFlower, this.blocks)
+                            this.physics.add.collider(fireFlower, this.entities.mario, (mushroom, mario) => {
+                                mario.lifes++;
+                                growMario(mushroom, mario, this)
+                            }, null, this)
+
+                        }
 
                     }
 
@@ -228,32 +328,67 @@ export const checkCollisionY = function (mario, block) {
                 if (mario.isGrown || mario.isSuperMario) {
 
                     block.destroy()
+
+                    const BRICKS_TO_CREATE = [
+                        {
+                            x: block.x - (block.width / 2),
+                            y: block.y - (block.height / 2)
+                        },
+                        {
+                            x: block.x + (block.width / 2),
+                            y: block.y - (block.height / 2)
+                        },
+                        {
+                            x: block.x - (block.width / 2),
+                            y: block.y + (block.height / 2)
+                        },
+                        {
+                            x: block.x + (block.width / 2),
+                            y: block.y + (block.height / 2)
+                        },
+                    ] 
                     
-                    const brokenBrickFirstPiece = this.physics.add.sprite(block.x, block.y, 'brickDebris')
+                    let bricks = []
+
+                    for(const brick of BRICKS_TO_CREATE) {
+
+                        bricks.push(
+                            this.physics.add.sprite(brick.x, brick.y, 'brickDebris')
                                             .setOrigin(0, 0)
                                             .setFrame(0)
                                             .setScale(2, 1.5)
                                             .refreshBody()
+                        )
 
-                    brokenBrickFirstPiece.setVelocityY(-300)
-                    brokenBrickFirstPiece.setVelocityX(-200)
-                    brokenBrickFirstPiece.setGravityY(300)
+                    }
 
-                    const brokenBrickSecondPiece = this.physics.add.sprite(block.x, block.y, 'brickDebris')
-                                            .setOrigin(0, 0)
-                                            .setFrame(0)
-                                            .setScale(2, 1.5)
-                                            .refreshBody()
 
-                    brokenBrickSecondPiece.setVelocityY(-300)
-                    brokenBrickSecondPiece.setVelocityX(200)
-                    brokenBrickSecondPiece.setGravityY(300)
+                    bricks.forEach((brick, index) => {
 
-                    
+                        if (index % 2 === 0) {
+
+                            brick.setVelocityY(-(Math.floor(Math.random() * (300 - 150 + 1)) + 150))
+                            brick.setVelocityX(-100)
+                            brick.setGravityY(300)
+                            brick.setAngularVelocity(150)
+
+                        } else {    
+
+                            brick.setVelocityY(-(Math.floor(Math.random() * (300 - 150 + 1)) + 150))
+                            brick.setVelocityX(100)
+                            brick.setGravityY(300)
+                            brick.setAngularVelocity(150)
+
+                        }
+
+                        
+
+                    })
+
 
                 } else {
 
-                    console.log("Mario small can't destroy bricks")
+                    //console.log("Mario small can't destroy bricks")
 
                 }
 
@@ -276,11 +411,9 @@ export const growMario = (mushroom, mario, scene) => {
     let i = 0
     let growAnimInterval = undefined
         
-    scene.sound.play("powerupAppears")
+    scene.sound.play("consumePowerup")
 
     if (mario.lifes === 2){
-        
-        console.log("Enters Grown Mario")
 
          growAnimInterval = setInterval(() => {
 
@@ -311,12 +444,12 @@ export const growMario = (mushroom, mario, scene) => {
     
     } else if (mario.lifes > 2) {
 
-        console.log("Enters Super Mario")
+        // console.log("Enters Super Mario")
         
 
         growAnimInterval = setInterval(() => {
 
-            console.log(i)
+            // console.log(i)
                 
             if (i % 2 !== 0) {
 
@@ -355,7 +488,7 @@ export const growMario = (mushroom, mario, scene) => {
     }, 500)
 
 
-    console.log(mario)
+    // console.log(mario)
 
 
 }
@@ -371,9 +504,6 @@ export const shrinkMario = (mario, goomba, scene) => {
     let growAnimInterval = undefined
         
     scene.sound.play("powerdown")
-
-    // console.log("Entra arriba")
-    // console.log(mario.lifes)
 
     switch (mario.lifes) {
 
@@ -398,9 +528,9 @@ export const shrinkMario = (mario, goomba, scene) => {
                     mario.height = 16
                     mario.width = 18
                     mario.setDisplaySize(27, 24)
-                    mario.body.setSize(20, 18)
+                    mario.body.setSize(18, 16)
                     mario.disableBody(true, false)
-
+                    mario.isInvincible = false
 
                 }
 
@@ -499,6 +629,26 @@ export const moveGoomba = (goomba, game) => {
     }
 }
 
+export const killGoomba = (goomba, fireball, game) => {
+
+    let { x, y, width, height } = fireball
+    fireball.destroy();
+
+    goomba.body.enable = false;
+
+    let explosion = game.add.sprite(x + width / 2, y - height / 2, 'fireball')
+                        .setOrigin(0, 0)
+                        .setScale(2, 2)
+    explosion.play('fireball-explosion'); 
+
+    
+    explosion.on('animationcomplete', () => {
+        explosion.destroy(); 
+        goomba.destroy(); 
+    });
+
+}
+
 
 
 export const getAnim = (mario, animName) => {
@@ -509,7 +659,7 @@ export const getAnim = (mario, animName) => {
 
     } else if (mario.lifes > 2) {
 
-        console.log("Entra")
+        // console.log("Entra")
         mario.anims.play(`mario-super-${animName}`, true)
 
     } else {
@@ -522,10 +672,39 @@ export const getAnim = (mario, animName) => {
 
 
 
-export const addScore = (game) => {
+export const addScore = (block, game) => {
+
+    const text = game.add.text(block.x - block.width / 2, block.y - block.height / 2, '100', {
+        font: 'light 12px "Calibri"',
+        fill: "#ffffff",
+        align: 'center',
+    })
+
+    game.tweens.add({
+
+        targets: text,
+        y: text.y - 30,  
+        duration: 700,  
+        ease: 'Linear',  
+        yoyo: false,  
+        repeat: 0, 
+        onComplete: () => {
+            
+            text.destroy()
+        
+        }
+    });
 
     game.score += 100
 
     return game.score
+
+}
+
+export const updateTime = (game) => {
+
+    game.time --;
+
+    return game.time
 
 }

@@ -1,11 +1,41 @@
 import * as actions from './utils.js'
 import { config } from './game.js'
 
+var i = 0
+var reloadTime = 1 //seg
 
 export const update = function () // Game loop
 {
 
+    if (this.entities.mario.isDead === true) return 
+    
+    if (this.time === 0) { 
+        
+        actions.marioDiesScreen(this.entities.mario, this) 
+        
+        return
+
+    }
+
+
     const isMarioTouchingFloor = this.entities.mario.body.touching.down     
+
+    i++
+
+    if (i % 120 === 0) {
+
+        this.textTime.setText(actions.updateTime(this))
+
+    }
+
+    reloadTime ++;
+
+    if (reloadTime % 60 === 0) {
+
+        this.entities.mario.weaponsReloaded = true
+
+    }
+
 
     this.entities.goomba.forEach((goomba) => {
         actions.moveGoomba(goomba, this)
@@ -17,7 +47,6 @@ export const update = function () // Game loop
 
     })
 
-    if (this.entities.mario.isDead === true) return 
 
     if (this.entities.mario.y >= config.height) {
 
@@ -25,6 +54,13 @@ export const update = function () // Game loop
         setTimeout(() => {
             this.scene.restart()
         }, 2000)
+    
+    } else if (Phaser.Input.Keyboard.JustUp(this.spaceBar)) {
+
+
+        actions.marioShoot(this.entities.mario, this)
+
+        this.entities.mario.weaponsReloaded = false
         
     
     } else if (this.keys.up.isDown && isMarioTouchingFloor ) {
@@ -34,16 +70,22 @@ export const update = function () // Game loop
         
     } else if (this.keys.right.isDown) {
 
+        //this.cameras.main.startFollow(this.entities.mario)
         actions.marioMoveRight(this.entities.mario, isMarioTouchingFloor)
+
 
     } else if (this.keys.left.isDown) {
         
+        //this.cameras.main.stopFollow(this.entities.mario)
         actions.marioMoveLeft(this.entities.mario, isMarioTouchingFloor)
-    
-    } else if (this.keys.down.isDown) {
         
-        // Agacharse
-        console.log("Down arrow")
+    } else if (this.keys.down.isDown && isMarioTouchingFloor) {
+        
+        if (this.entities.mario.lifes >= 2) {
+
+            actions.marioBend(this.entities.mario)
+
+        }
 
     } else {
 
