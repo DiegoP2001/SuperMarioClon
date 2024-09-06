@@ -4,6 +4,8 @@ export const WORLD_WIDTH = '100%'
 export const WORLD_HEIGHT = 600
 export const FLOOR_RENDER_TIMES = 9
 export const GOOMBAS_AMOUNT = 16
+export const TIME_TO_PLAY = 400
+
 
    
 export const EMPTY = 0
