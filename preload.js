@@ -51,7 +51,7 @@ export const preload = function () // Preload the necesary assets
         // Spritesheets
             this.load.spritesheet('brickDebris', 'assets/blocks/overworld/brick-debris.png',
                 {
-                   frameWidth: 16, frameHeight: 8  
+                   frameWidth: 8, frameHeight: 8  
                 }
             )
             this.load.spritesheet( 'misteryBlock', 'assets/blocks/overworld/misteryBlock.png',
@@ -145,8 +145,10 @@ export const preload = function () // Preload the necesary assets
 
         // Fireball
 
-            this.load.image('fireball', 'assets/entities/fireball.png')
-            this.load.spritesheet('marioFire', 'assets/entities/fireball-explosion.png'
+            this.load.spritesheet('fire', 'assets/entities/fireball.png', {
+                frameWidth: 8, frameHeight: 8
+            })
+            this.load.spritesheet('fireball', 'assets/entities/fireball-explosion.png'
                 , {
                     frameWidth: 16, frameHeight: 16
                 }
@@ -220,4 +222,7 @@ export const preload = function () // Preload the necesary assets
 
     // *********************************************** AUDIO ***************************************************
     // ---------------------------------------------------------------------------------------------------------
+
+    
+
 }
