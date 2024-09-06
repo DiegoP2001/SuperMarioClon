@@ -53,9 +53,17 @@ export const createAnims = (game) => {
         key: "mario-grow-dies",
         frames: [{ key: "marioGrown", frame: 4 }],
       },
+
+      
+      bend: {
+        key: "mario-grow-bend",
+        frames: [{ key: "marioGrown", frame: 4 }]
+      }
+
     },
 
     grownFire: {
+
       walk: {
         key: "mario-super-walk",
         frames: game.anims.generateFrameNumbers("marioFire", {
@@ -81,6 +89,11 @@ export const createAnims = (game) => {
       dies: {
         key: "mario-super-dies",
         frames: [{ key: "marioFire", frame: 4 }],
+      },
+
+      bend: {
+        key: "mario-super-bend",
+        frames: [{ key: "marioFire", frame: 4 }]
       },
 
       shootFireball: {
@@ -132,6 +145,16 @@ export const createAnims = (game) => {
     game.anims.create(marioAnims.grownFire.jump);
   }
 
+  // BEND
+
+  if (!game.anims.exists("mario-grow-bend")) {
+    game.anims.create(marioAnims.grown.bend);
+  }
+
+  if (!game.anims.exists("mario-super-bend")) {
+    game.anims.create(marioAnims.grownFire.bend);
+  }
+
   // DIES
 
   if (!game.anims.exists("mario-dies")) {
@@ -170,4 +193,32 @@ export const createAnims = (game) => {
       repeat: -1,
     });
   }
+
+  if (!game.anims.exists("fireball-explosion")) {
+    game.anims.create({
+      key: "fireball-explosion",
+      frames: game.anims.generateFrameNumbers("fireball", { start: 0, end: 2 }),
+      frameRate: 15,
+      repeat: 0,
+    });
+  }
+
+  if (!game.anims.exists("fire-rotation")) {
+    game.anims.create({
+      key: "fire-rotation",
+      frames: game.anims.generateFrameNumbers("fire", { start: 0, end: 3 }),
+      frameRate: 15,
+      repeat: -1,
+    });
+  }
+  
+  if (!game.anims.exists("flower-bright")) {
+    game.anims.create({
+      key: "flower-bright",
+      frames: game.anims.generateFrameNumbers("fireFlower", { start: 0, end: 3 }),
+      frameRate: 15,
+      repeat: -1,
+    });
+  }
+
 };
