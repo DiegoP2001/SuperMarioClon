@@ -27,7 +27,9 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.marioColliders = []
     this.goombaColliders = []
     this.pipes = []
-    this.flags = []
+    this.flag = []
+    this.flagMast = []
+    this.castle = []
     this.barriers = {}
     this.barriers.left = []
     this.barriers.right = []
@@ -82,7 +84,9 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.floor = this.physics.add.staticGroup()
     this.blocks = this.physics.add.staticGroup()
     this.pipes = this.physics.add.staticGroup()
-    this.flags = this.physics.add.staticGroup()
+    this.flag = this.physics.add.staticGroup()
+    this.flagMast = this.physics.add.staticGroup()
+    this.castle = this.physics.add.staticGroup()
 
 
     // Creamos los bloques ************************************************************************
@@ -93,7 +97,7 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
     // BLOQUES *****************************************************************************************************
 
-    let posInicialX = 6700
+    let posInicialX = 6650
     let posInicialY = config.height - 27
 
     scenaryObjects.createFlag(this, posInicialX, posInicialY - 21, 'flagMast')
@@ -134,6 +138,7 @@ export const create = function () // Se ejecuta cuando el juego comienza
     // Añadiendo las físicas del "mario"
     gameEntities.createMario(this, 100, 250)
     this.entities.mario.lifes = 1
+    this.entities.mario.isWinner = false
     this.entities.mario.setDrag(100, 0)
     this.entities.mario.setMaxVelocity(200, 350)
     this.entities.mario.isInvincible = false
@@ -165,6 +170,36 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
     // Colisionador
 
+        //const flagCollider = this.physics.add.collider(this.entities.mario, this.flag)
+        const flagMastCollider = this.physics.add.collider(this.entities.mario, this.flagMast, (mario, flagMast) => {
+
+            mario.isWinner = true
+            mario.setVelocityY(0)
+            
+            this.tweens.add({
+                targets: mario,         // El objeto que quieres animar
+                x: mario.x + 20,                // Reducir la opacidad a 0
+                duration: 1000,          // Duración del fade en milisegundos (1000 ms = 1 segundo)
+                ease: 'Power2',          // Tipo de interpolación
+            })
+            
+            console.log(this.flag.children.entries[0])
+
+            this.tweens.add({
+                targets: this.flag.children.entries[0],         // El objeto que quieres animar
+                y: this.flag.children.entries[0].y + 180 ,                // Reducir la opacidad a 0
+                duration: 2000,          // Duración del fade en milisegundos (1000 ms = 1 segundo)
+                ease: 'Power1',          // Tipo de interpolación
+            })
+
+            this.sound.play("win")
+
+            this.scoreText.setText(`Score: ${actions.addScore(mario, this, true)}`)
+
+            flagMastCollider.destroy()
+
+        })
+
         // Mario VS Floor
         this.marioColliders.push(
             this.physics.add.collider(this.entities.mario, this.floor)
@@ -180,12 +215,12 @@ export const create = function () // Se ejecuta cuando el juego comienza
 
         this.entities.goomba.forEach((goomba) => {
 
-            //const collider = this.physics.add.collider(this.entities.mario, goomba, actions.checkCollisionX, null, this);
+            const collider = this.physics.add.collider(this.entities.mario, goomba, actions.checkCollisionX, null, this);
             const blockCollider = this.physics.add.collider(this.blocks, goomba)
             const pipeCollider = this.physics.add.collider(this.pipes, goomba)
             const leftBarrierCollider = this.physics.add.collider(this.barriers.left, goomba)
             const rigthBarrierCollider = this.physics.add.collider(this.barriers.right, goomba)
-            //this.marioColliders.push(collider) 
+            this.marioColliders.push(collider) 
             
         })
         
@@ -208,7 +243,7 @@ export const create = function () // Se ejecuta cuando el juego comienza
     this.cameras.main.setBounds(0, 0, config.width * 4, config.height)
     this.cameras.main.startFollow(this.entities.mario)
 
-    console.log(this.cameras.main)
+    // console.log(this.cameras.main)
 
 
     // Eventos de teclado: es necesaria esta línea para poder interactuar con los eventos en el update.

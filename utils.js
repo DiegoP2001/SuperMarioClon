@@ -71,20 +71,18 @@ export const marioJump = function (mario) {
 export const marioMoveRight = function (mario, touchingFloor) {
 
     mario.setAccelerationX(200)
-    // if (touchingFloor) { mario.anims.play("mario-walk", true) }
+    if (touchingFloor) { getAnim(mario, "walk") }
     mario.flipX = false
 
-    getAnim(mario, "walk")
+    
 
 }
 
 export const marioMoveLeft = function (mario, touchingFloor) {
 
     mario.setAccelerationX(-200)
-
+    if (touchingFloor) { getAnim(mario, "walk") }
     mario.flipX = true
-
-    getAnim(mario, "walk")
 
 }
 
@@ -202,6 +200,7 @@ export const checkCollisionX = function (mario, goomba) {
 
     } else {
 
+        this.scoreText.setText(`Score: ${addScore(goomba, this)}`)
         this.sound.play('goombaStomp')
         goomba.anims.play('goomba-crush', true)
         goomba.isDead = true
@@ -284,7 +283,7 @@ export const checkCollisionY = function (mario, block) {
                             
                             mushroom.setGravityY(150)
                             mushroom.setVelocityY(-150)
-                            moveGoomba(mushroom, this)
+                            //moveGoomba(mushroom, this)
                             
 
 
@@ -306,14 +305,16 @@ export const checkCollisionY = function (mario, block) {
                             fireFlower.anims.play("flower-bright")
                             fireFlower.setGravityY(150)
                             fireFlower.setVelocityY(-150)
-                            moveGoomba(fireFlower, this)
+                           
                             
 
 
                             this.physics.add.collider(fireFlower, this.floor)
                             this.physics.add.collider(fireFlower, this.blocks)
                             this.physics.add.collider(fireFlower, this.entities.mario, (mushroom, mario) => {
-                                mario.lifes++;
+                                mario.lifes === 3 ? 3 : mario.lifes++
+                                console.log(`Mario Lifes: ${mario.lifes}`)
+                                mario.isSuperMario = true
                                 growMario(mushroom, mario, this)
                             }, null, this)
 
@@ -416,7 +417,6 @@ export const growMario = (mushroom, mario, scene) => {
     if (mario.lifes === 2){
 
          growAnimInterval = setInterval(() => {
-
                 
             if (i % 2 !== 0) {
 
@@ -500,16 +500,21 @@ export const shrinkMario = (mario, goomba, scene) => {
     scene.physics.world.pause()
     mario.isInvincible = true
 
+    let { x, y } = mario
     let i = 0
-    let growAnimInterval = undefined
+    let shrinkAnimInterval = undefined
         
     scene.sound.play("powerdown")
+
+    console.log( mario.lifes )
 
     switch (mario.lifes) {
 
         case 2: 
 
-            growAnimInterval = setInterval(() => {
+            shrinkAnimInterval = setInterval(() => {
+
+                console.log("Mario 2 lifes interval shrink")
 
                 if (i % 2 !== 0) {
                     
@@ -543,8 +548,9 @@ export const shrinkMario = (mario, goomba, scene) => {
 
         case 3:
 
-            setInterval(() => {
+            shrinkAnimInterval = setInterval(() => {
 
+                console.log("Mario 3 lifes interval shrink")
                 if (i % 2 !== 0) {
 
                     mario.isGrown = false
@@ -572,13 +578,17 @@ export const shrinkMario = (mario, goomba, scene) => {
             }, 100)
 
             break;
+        
+            default:
+                console.log("Mario DEFAULT lifes interval shrink")
+                break;
 
     }
 
 
     setTimeout(() => {
 
-        clearInterval(growAnimInterval)
+        clearInterval(shrinkAnimInterval)
         scene.physics.world.resume()
         scene.anims.resumeAll()
 
@@ -586,7 +596,7 @@ export const shrinkMario = (mario, goomba, scene) => {
 
     setTimeout(() => {
 
-        mario.enableBody(true, goomba.x, goomba.y - 50, true, true)
+        mario.enableBody(true, x, y - 50, true, true)
         mario.setVisible(true)
 
     }, 1000)
@@ -635,6 +645,7 @@ export const killGoomba = (goomba, fireball, game) => {
     fireball.destroy();
 
     goomba.body.enable = false;
+    game.scoreText.setText(`Score: ${addScore(goomba, game)}`)
 
     let explosion = game.add.sprite(x + width / 2, y - height / 2, 'fireball')
                         .setOrigin(0, 0)
@@ -672,9 +683,11 @@ export const getAnim = (mario, animName) => {
 
 
 
-export const addScore = (block, game) => {
+export const addScore = (block, game, winner) => {
 
-    const text = game.add.text(block.x - block.width / 2, block.y - block.height / 2, '100', {
+
+
+    const text = game.add.text(block.x - block.width / 2, block.y - block.height / 2, winner ? game.time : '100' , {
         font: 'light 12px "Calibri"',
         fill: "#ffffff",
         align: 'center',
@@ -695,7 +708,17 @@ export const addScore = (block, game) => {
         }
     });
 
-    game.score += 100
+    if (winner) {
+
+        game.score += game.time
+
+    } else {
+
+        game.score += 100
+
+    }
+
+    
 
     return game.score
 
