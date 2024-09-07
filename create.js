@@ -177,19 +177,19 @@ export const create = function () // Se ejecuta cuando el juego comienza
             mario.setVelocityY(0)
             
             this.tweens.add({
-                targets: mario,         // El objeto que quieres animar
-                x: mario.x + 20,                // Reducir la opacidad a 0
-                duration: 1000,          // Duración del fade en milisegundos (1000 ms = 1 segundo)
-                ease: 'Power2',          // Tipo de interpolación
+                targets: mario,         
+                x: mario.x + 20,                
+                duration: 1000,          
+                ease: 'Power2',          
             })
             
             console.log(this.flag.children.entries[0])
 
             this.tweens.add({
-                targets: this.flag.children.entries[0],         // El objeto que quieres animar
-                y: this.flag.children.entries[0].y + 180 ,                // Reducir la opacidad a 0
-                duration: 2000,          // Duración del fade en milisegundos (1000 ms = 1 segundo)
-                ease: 'Power1',          // Tipo de interpolación
+                targets: this.flag.children.entries[0],         
+                y: this.flag.children.entries[0].y + 180 ,                
+                duration: 2000,          
+                ease: 'Power1',      
             })
 
             this.sound.play("win")
