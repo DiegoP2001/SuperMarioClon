@@ -22,7 +22,7 @@ Para ejecutar este proyecto localmente, sigue estos pasos:
 
    
 ```
-   git clone https://github.com/usuario/ClonSuperMario.git
+   git clone https://github.com/DiegoP2001/SuperMarioClon
 ```
 
 
