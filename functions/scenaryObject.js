@@ -129,7 +129,15 @@ export const createPipe = function (game, posX, posY, key) {
 };
 
 export const createFlag = function (game, posX, posY, key = "flagMast") {
-  game.flags
+
+  game.flag
+    .create(posX - 15, 340, "finalFlag")
+    .setOrigin(1, 1)
+    .setFrame(0)
+    .setScale(2, 1.5)
+    .refreshBody();
+
+  game.flagMast
     .create(posX, posY, key)
     .setOrigin(1, 1)
     .setFrame(0)
@@ -138,7 +146,7 @@ export const createFlag = function (game, posX, posY, key = "flagMast") {
 };
 
 export const createCastle = function (game, posX, posY, key = "castle") {
-  game.flags
+  game.castle
     .create(posX, posY, key)
     .setOrigin(1, 1)
     .setFrame(0)
